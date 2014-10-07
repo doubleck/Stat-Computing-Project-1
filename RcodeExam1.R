@@ -2,6 +2,9 @@
 
 ## Problem 1
 
+# Clear working environment
+rm(list=ls())
+
 ## Load MASS Library
 library (MASS)
 attach (Boston)
@@ -11,7 +14,7 @@ cv<-sd(x)/mean(x);cv
 
 N=2000
 n<-length(x);n
-cvb<-numeric(N)
+cvb<-numeric(N)  ##Answer 1-1.
 
 ##Bootstrap estimate of standard error of cv
 
@@ -37,7 +40,7 @@ for(k in 1:m)
   cvm[k]<-s/xbar
 }
 
-mean.cvm<-mean(cvm);mean.cvm ##Answer 1-1.
+mean.cvm<-mean(cvm);mean.cvm 
 
 bias<-mean(cvm)-cv;bias
 
@@ -52,7 +55,10 @@ ci<-quantile (cvm,c(alfa/2,1-alfa/2),type=1);ci     ## Answer for 1-2
 error<-qt (.975,df=n-1)*s/sqrt(n);error
 
 cit.upper<-mean(cvm)+error;cit.upper
-cit.bot<-mean(cvm)-error;cit.bot     ## Answer for 1-3
+cit.bot<-mean(cvm)-error;cit.bot     
+
+cit.ci=c(cit.bot,cit.upper);cit.ci
+## Answer for 1-3
 
 
 

@@ -1,3 +1,5 @@
+install.packages ("rmarkdown")
+install.packages ("knitr")
 ##This is R Code for Statistical Computing
 
 ## Problem 1

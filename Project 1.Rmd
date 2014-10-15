@@ -369,10 +369,10 @@ log_pred <- exp(predict(log_mod, newdata=validation)) # remember to exponentiate
 
 Then we find the errors of each prediction set and calculate $MSE_1$ for each model.
 ```{r}
-lin_errors <- (validation$chemical-lin_pred)
-quad_errors <- (validation$chemical-quad_pred)
-exp_errors <- (validation$chemical-exp_pred)
-log_errors <- (validation$chemical-log_pred)
+lin_errors <- (validation$magnetic-lin_pred)
+quad_errors <- (validation$magnetic-quad_pred)
+exp_errors <- (validation$magnetic-exp_pred)
+log_errors <- (validation$magnetic-log_pred)
 
 lin_MSE <- mean(lin_errors^2)
 quad_MSE <- mean(quad_errors^2)
@@ -409,10 +409,10 @@ for(i in 1:k){
   log_pred <- exp(predict(log_mod, newdata=validation)) # log-log model predictions
   
   # calculate prediction errors for validation set i
-  lin_errors <- (validation$chemical-lin_pred)
-  quad_errors <- (validation$chemical-quad_pred)
-  exp_errors <- (validation$chemical-exp_pred)
-  log_errors <- (validation$chemical-log_pred)
+  lin_errors <- (validation$magnetic-lin_pred)
+  quad_errors <- (validation$magnetic-quad_pred)
+  exp_errors <- (validation$magnetic-exp_pred)
+  log_errors <- (validation$magnetic-log_pred)
   
   # calculate MSE for validation set i
   lin_MSE <- mean(lin_errors^2)
@@ -432,6 +432,7 @@ We calculate the means of the four MSEs computed (which are stored in `mse_df`).
 colMeans(mse_df)
 ```
 
+Using 10-fold cross validation it appears the quadratic model is best suited to the data. In example 7.18 the authors find the same thing using leave-one-out cross-validation.
 
 -----
 

@@ -20,9 +20,9 @@ library(MASS) # load namespace `MASS`
 data(Boston) # the object "Boston" now appears in the global environment
 ```
 
-### 1. Based on this data set, provide an estimate for the population coefficient of variation, $\sigma / \mu$, of "medv". Call this estimate $\hat{\sigma} / \hat{\mu}$.
+### 1. Based on this data set, provide an estimate for the population coefficient of variation, $\sigma / \mu$, of "medv". Call this estimate $\widehat{\sigma} / \widehat{\mu}$.
 
-First I compute the sample standard deviation and sample mean, then the coefficient of variation $\hat{\sigma} / \hat{\mu}$ from these estimates.
+First I compute the sample standard deviation and sample mean, then the coefficient of variation $\widehat{\sigma} / \widehat{\mu}$ from these estimates.
 ```{r}
 s <- sd(Boston$medv) # sample std dev
 xbar <- mean(Boston$medv) # arithmetic mean
@@ -34,27 +34,27 @@ mycv
 
 With several bootstrap replicate samples $b = 1, \, ..., \, B$, the normal bootstrap confidence interval is given by 
 
-$$\hat{\theta} \pm  z_{\alpha / 2} se(\hat{\theta}),$$
+$$\widehat{\theta} \pm  z_{\alpha / 2} se(\widehat{\theta}),$$
 
-where $se(\hat{\theta})$ is estimated by bootstrapping. This estimate is 
+where $se(\widehat{\theta})$ is estimated by bootstrapping. This estimate is 
 
-$$\hat{se}(\hat{\theta}^{\ast}) = \sqrt{ \dfrac{1}{B-1} \sum_{b=1}^{B}(\hat{\theta}^{(b)} - \bar{\hat{\theta}}^{\ast})^2 }$$
+$$\widehat{se}(\widehat{\theta}^{\ast}) = \sqrt{ \dfrac{1}{B-1} \sum_{b=1}^{B}(\widehat{\theta}^{(b)} - \overline{\widehat{\theta}}^{\ast})^2 }$$
 
-and $\bar{\hat{\theta}}^{\ast} = \dfrac{1}{B} \sum_{b=1}^{B}\hat{\theta}^{(b)}$. 
+and $\overline{\widehat{\theta}}^{\ast} = \dfrac{1}{B} \sum_{b=1}^{B}\widehat{\theta}^{(b)}$. 
 
 Given these formulations, we propose the following algorithm for computing the 95% standard normal bootstrap confidence interval:
 
 1. For each bootstrap replicate $b = 1, \, ..., \, B$, generate $n$ random integers $\left\{ i_1, \, i_2, \, ..., \, i_n \right\}$ uniformly on the set $\left\{ 1, \, 2, \, ..., \, n \right\}$ and select the bootstrap sample $x^{\ast(b)} = ( x_{i1}, \, x_{i2}, \, ..., \, x_{in})$.
 
-2. Compute $\hat{\theta}^{(b)}$ for the $b^{th}$ bootstrap sample.
+2. Compute $\widehat{\theta}^{(b)}$ for the $b^{th}$ bootstrap sample.
 
-3. Compute $\bar{\hat{\theta}}^{\ast} = \dfrac{1}{B} \sum_{b=1}^{B}\hat{\theta}^{(b)}$ from all of the computed $\hat{\theta}^{(b)}$'s.
+3. Compute $\overline{\widehat{\theta}}^{\ast} = \dfrac{1}{B} \sum_{b=1}^{B}\widehat{\theta}^{(b)}$ from all of the computed $\widehat{\theta}^{(b)}$'s.
 
-4. Use the $\hat{\theta}^{(b)}$'s and $\bar{\hat{\theta}}^{\ast}$ to compute $\hat{se}(\hat{\theta}^{\ast}) = \sqrt{ \dfrac{1}{B-1} \sum_{b=1}^{B}(\hat{\theta}^{(b)} - \bar{\hat{\theta}}^{\ast})^2 }$
+4. Use the $\widehat{\theta}^{(b)}$'s and $\overline{\widehat{\theta}}^{\ast}$ to compute $\widehat{se}(\widehat{\theta}^{\ast}) = \sqrt{ \dfrac{1}{B-1} \sum_{b=1}^{B}(\widehat{\theta}^{(b)} - \overline{\widehat{\theta}}^{\ast})^2 }$
 
-5. With an estimate of the standard error for $\hat{\theta}$ now in hand, compute the $100(1-\alpha)$% confidence interval for $\theta$, $\hat{\theta} \pm  z_{\alpha / 2} se(\hat{\theta})$.
+5. With an estimate of the standard error for $\widehat{\theta}$ now in hand, compute the $100(1-\alpha)$% confidence interval for $\theta$, $\widehat{\theta} \pm  z_{\alpha / 2} se(\widehat{\theta})$.
 
-We demonstrate this algorithm by using it to compute the 95% standard normal bootstrap confidence interval for the population coefficient of variation, $\hat{\sigma}/\hat{\mu}$, of “medv”.
+We demonstrate this algorithm by using it to compute the 95% standard normal bootstrap confidence interval for the population coefficient of variation, $\widehat{\sigma}/\widehat{\mu}$, of “medv”.
 
 1. For each bootstrap replicate $b = 1, \, ..., \, B$, generate $n$ random integers $\left\{ i_1, \, i_2, \, ..., \, i_n \right\}$ uniformly on the set $\left\{ 1, \, 2, \, ..., \, n \right\}$ and select the bootstrap sample $x^{\ast(b)} = ( x_{i1}, \, x_{i2}, \, ..., \, x_{in})$.
 ```{r}
@@ -65,18 +65,18 @@ set.seed(8675309) # set random seed for repeatability
 my_replicates <- lapply(1:B, function(x) sample(Boston$medv, size=n, replace=T))
 ```
 
-2. Compute $\hat{\theta}^{(b)}$ for the $b^{th}$ bootstrap sample.
+2. Compute $\widehat{\theta}^{(b)}$ for the $b^{th}$ bootstrap sample.
 ```{r}
 theta_hats <- sapply(my_replicates, function(x) sd(x)/mean(x)) # coef of variation for each replicate
 ```
 
-3. Compute $\bar{\hat{\theta}}^{\ast} = \dfrac{1}{B} \sum_{b=1}^{B}\hat{\theta}^{(b)}$ from all of the computed $\hat{\theta}^{(b)}$'s.
+3. Compute $\overline{\widehat{\theta}}^{\ast} = \dfrac{1}{B} \sum_{b=1}^{B}\widehat{\theta}^{(b)}$ from all of the computed $\widehat{\theta}^{(b)}$'s.
 ```{r}
 theta_hat_bar <- mean(theta_hats)
 theta_hat_bar
 ```
 
-4. Use the $\hat{\theta}^{(b)}$'s and $\bar{\hat{\theta}}^{\ast}$ to compute $\hat{se}(\hat{\theta}^{\ast}) = \sqrt{ \dfrac{1}{B-1} \sum_{b=1}^{B}(\hat{\theta}^{(b)} - \bar{\hat{\theta}}^{\ast})^2 }$.
+4. Use the $\widehat{\theta}^{(b)}$'s and $\overline{\widehat{\theta}}^{\ast}$ to compute $\widehat{se}(\widehat{\theta}^{\ast}) = \sqrt{ \dfrac{1}{B-1} \sum_{b=1}^{B}(\widehat{\theta}^{(b)} - \overline{\widehat{\theta}}^{\ast})^2 }$.
 ```{r}
 theta_hat_errors <- theta_hats-theta_hat_bar
 theta_hat_sq_errors <- theta_hat_errors^2
@@ -84,7 +84,7 @@ std_err_theta <- sqrt( (1/(B-1)) * sum(theta_hat_sq_errors) )
 std_err_theta
 ```
 
-5. With an estimate of the standard error for $\hat{\theta}$ now in hand, compute the $100(1-\alpha)$% confidence interval for $\theta$, $\hat{\theta} \pm  z_{\alpha / 2} se(\hat{\theta})$.
+5. With an estimate of the standard error for $\widehat{\theta}$ now in hand, compute the $100(1-\alpha)$% confidence interval for $\theta$, $\widehat{\theta} \pm  z_{\alpha / 2} se(\widehat{\theta})$.
 ```{r}
 alpha <- 0.05
 z <- qnorm(alpha/2, lower.tail=F)
@@ -97,7 +97,195 @@ So we can say with 95% confidence that the true population coefficient of variat
 
 ### 3. Propose an algorithm to obtain a bootstrap $t$ confidence interval. Use the algorithm proposed to compute a bootstrap $t$ confidence interval for the population coefficient of variation, $\sigma / \mu$, of "medv" with confidence level 95%.
 
-### 4. Propose an algorithm to obtain a BC a bootstrap confidence interval. Use the algorithm proposed to compute a 95% BC a bootstrap confidence interval for the population coefficient of variation, $\sigma / \mu$, of "medv".
+The $100(1-\alpha)$% bootstrap $t$ confidence interval is 
+$$(\widehat{\theta}-t^*_{1-\alpha/2}\widehat{se}(\widehat{\theta}), \: \widehat{\theta}+t^*_{1-\alpha/2}\widehat{se}(\widehat{\theta})$$
+
+where $\widehat{se}(\widehat{\theta})$, $t^*_{\alpha/2}$, and $t^*_{1-\alpha/2}$ are defined as below.
+
+We propose the following algorithm for computing the 95% $t$ confidence interval.
+
+1. For each bootstrap replicate $b = 1, \, ..., \, B$, generate $n$ random integers $\left\{ i_1, \, i_2, \, ..., \, i_n \right\}$ uniformly on the set $\left\{ 1, \, 2, \, ..., \, n \right\}$ and select the bootstrap sample $x^{(b)} = ( x_{i1}, \, x_{i2}, \, ..., \, x_{in})$.
+2. For each replicate $b_i$,
+  (a) Compute $\widehat{\theta}^{(b)}$ from the $b^{th}$ sample $x^{(b)}$
+  (b) Estimate the standard error of $\widehat{\theta}^{(b)}$, $\widehat{se}(\widehat{\theta}^{(b)})$ by resampling the $b^{th}$ bootstrap sample.
+  (c) Compute the $b^{th}$ replicate of the "$t$" statistic, $t^{(b)} = \dfrac{\widehat{\theta}^{(b)}-\widehat{\theta}}{\widehat{se}(\widehat{\theta}^{(b)})}$.
+3. From the sample of replicates $t^{(1)}, \, ..., \, t^{(B)}$  (which will be the reference distribution for bootstrap $t$), find the sample quantiles $t^*_{\alpha/2}$ and $t^*_{1-\alpha/2}$. 
+4. Compute $\widehat{se}(\widehat{\theta})$, the sample standard deviation of the replicates $\widehat{\theta}^{(b)}$.
+5. Compute the confidence limits 
+$$(\widehat{\theta}-t^*_{1-\alpha/2}\widehat{se}(\widehat{\theta}), \: \widehat{\theta}-t^*_{\alpha/2}\widehat{se}(\widehat{\theta})$$
+
+We demonstrate this algorithm by using it to compute the 95% $t$ bootstrap confidence interval for the population coefficient of variation, $\widehat{\sigma}/\widehat{\mu}$, of “medv”.
+
+1. For each bootstrap replicate $b = 1, \, ..., \, B$, generate $n$ random integers $\left\{ i_1, \, i_2, \, ..., \, i_n \right\}$ uniformly on the set $\left\{ 1, \, 2, \, ..., \, n \right\}$ and select the bootstrap sample $x^{(b)} = ( x_{i1}, \, x_{i2}, \, ..., \, x_{in})$.
+
+We will reuse the bootstrap samples created in the previous problem, stored in the list `my_replicates`.
+
+2. For each replicate $b_i$,
+  (a) Compute $\widehat{\theta}^{(b)}$ from the $b^{th}$ sample $x^{(b)}$
+  (b) Estimate the standard error of $\widehat{\theta}^{(b)}$, $\widehat{se}(\widehat{\theta}^{(b)})$ by resampling the $b^{th}$ bootstrap sample.
+  (c) Compute the $b^{th}$ replicate of the "$t$" statistic, $t^{(b)} = \dfrac{\widehat{\theta}^{(b)}-\widehat{\theta}}{\widehat{se}(\widehat{\theta}^{(b)})}$.
+
+Each $\widehat{\theta}^{(b)}$ is already calculated and stored in the vector `theta_hats`.
+
+To find the bootstrap standard error for each bootstrap replicate, we will define a function `bootstrap_se()` and apply it to each bootstrap sample.
+```{r, cache=TRUE}
+# define function to take bootstrap standard error
+bootstrap_se <- function(x, num_replicates, estimate_fun){
+  # sample size
+  n <- length(x)
+  # pre-allocate empty vector for bootstrap estimates
+  boot_ests <- vector(mode='numeric', length=num_replicates)
+  # take bootstrap samples and find estimate of each
+  for(i in 1:num_replicates){
+    boot_ests[i] <- estimate_fun(sample(x, size=n, replace=T))
+  }
+  # find mean of bootstrap estimates
+  boot_est_mean <- mean(boot_ests)
+  # find squared error of each bootstrap estimate
+  boot_sq_errs <- (boot_ests-boot_est_mean)^2
+  # find std error
+  boot_std_err <- sqrt( (1/(num_replicates-1)) * sum(boot_sq_errs) )
+  
+  return(boot_std_err)
+}
+
+# define coef_var function to pass to the estimate_fun argument of bootstrap_se()
+coef_var <- function(x) sd(x)/mean(x)
+
+# apply bootstrap_se() to each bootstrap sample in my_replicates
+se_hats <- sapply(my_replicates, bootstrap_se, num_replicates=200, estimate_fun=coef_var)
+```
+
+Now that we have $\widehat{\theta}^{(b)}$ and $\widehat{se}(\widehat{\theta}^{(b)})$ for each replicate, we can calculate $t^{(b)}$ for each replicate (reusing the vector of bootstrap estimates `theta_hats` from earlier).
+```{r}
+my_ts <- (theta_hats-mycv)/(se_hats)
+```
+
+3. From the sample of replicates $t^{(1)}, \, ..., \, t^{(B)}$  (which will be the reference distribution for bootstrap $t$), find the sample quantiles $t^*_{\alpha/2}$ and $t^*_{1-\alpha/2}$. 
+```{r}
+t_lower <- quantile(my_ts, (1-alpha/2))
+t_upper <- quantile(my_ts, alpha/2)
+c(t_lower, t_upper)
+```
+
+4. Compute $\widehat{se}(\widehat{\theta})$, the sample standard deviation of the replicates $\widehat{\theta}^{(b)}$.
+
+We will reuse the value calculated earlier, `std_err_theta`.
+
+5. Compute the confidence limits 
+$$(\widehat{\theta}-t^*_{1-\alpha/2}\widehat{se}(\widehat{\theta}), \: \widehat{\theta}-t^*_{\alpha/2}\widehat{se}(\widehat{\theta}))$$
+
+```{r}
+lower <- mycv-t_lower*std_err_theta
+upper <- mycv-t_upper*std_err_theta
+c(lower, upper)
+```
+
+### 4. Propose an algorithm to obtain a BCa bootstrap confidence interval. Use the algorithm proposed to compute a 95% BCa bootstrap confidence interval for the population coefficient of variation, $\sigma / \mu$, of "medv".
+
+The BCa bootstrap confidence interval uses the $\alpha_1^{th}$ and the $\alpha_2^{th}$ percentiles of the distribution of $\widehat{\theta}^*$, where
+$$\alpha_1 = \Phi \left( \widehat{z}_0 + \dfrac{\widehat{z}_0 + z_{\alpha /2}}{1-\widehat{a}(\widehat{z}_0 + z_{\alpha /2})} \right),$$
+$$\alpha_2 = \Phi \left( \widehat{z}_0 + \dfrac{\widehat{z}_0 + z_{1-\alpha /2}}{1-\widehat{a}(\widehat{z}_0 + z_{1-\alpha /2})} \right)$$
+
+$z_0$ is a correction for bias and is estimated by $\widehat{z}_0 = \Phi^{-1} \left( \dfrac{1}{B} \sum\limits_{b=1}^{B} I(\widehat{\theta}^{(b)} < \widehat{\theta}) \right)$.
+
+$\widehat{a}$ is a correction for skewness and is estimated by $\widehat{a} = \dfrac{\sum\limits_{i=1}^{n} (\overline{\theta_{(.)}} - \theta_{(i)})^3}{6 \sum\limits_{i=1}^{n} ((\overline{\theta_{(.)}} - \theta_{(i)})^2)^{3/2}}$.
+
+$\theta_(i)$ is the estimate computed from a sample missing the $i^{th}$ point.
+
+$\overline{\widehat{\theta}_{(.)}}$ is the mean of the estimates calculated from leave-one-out samples, given by $\overline{\widehat{\theta}_{(.)}} = \dfrac{1}{n}\sum\limits_{i=1}^{n} \widehat{\theta}_{(i)}$. 
+
+Using these formulations, we propose the following algorithm for computing the BCa bootstrap confidence interval:
+
+1. For each bootstrap replicate $b = 1, \, ..., \, B$, generate $n$ random integers $\left\{ i_1, \, i_2, \, ..., \, i_n \right\}$ uniformly on the set $\left\{ 1, \, 2, \, ..., \, n \right\}$ and select the bootstrap sample $x^{(b)} = ( x_{i1}, \, x_{i2}, \, ..., \, x_{in})$.
+2. For each replicate $b_i$, compute $\widehat{\theta}^{(b)}$ from the $b^{th}$ sample $x^{(b)}$.
+3. From the $B$ calculated $\widehat{\theta}s$, calculate $\widehat{z}_0 = \Phi^{-1} \left( \dfrac{1}{B} \sum\limits_{b=1}^{B} I(\widehat{\theta}^{(b)} < \widehat{\theta}) \right)$.
+4. For each leave-one-out sample $x_{(i)} = (x_1, ..., x_{i-1}, x_{i+1}, ..., x_n)$, compute $\widehat{\theta}_{(i)}$.
+5. Compute $\overline{\widehat{\theta}_{(.)}}$, the mean of all $n$ computed $\widehat{\theta}_{(i)}s$.
+6. From the $n$ computed $\widehat{\theta}_{(i)}s$ and $\overline{\widehat{\theta}_{(.)}}$, compute $\widehat{a} = \dfrac{\sum\limits_{i=1}^{n} (\overline{\theta_{(.)}} - \theta_{(i)})^3}{6 \sum\limits_{i=1}^{n} ((\overline{\theta_{(.)}} - \theta_{(i)})^2)^{3/2}}$.
+7. Using $\widehat{a}$ and $\widehat{z}_0$, compute $\alpha_1 = \Phi \left( \widehat{z}_0 + \dfrac{\widehat{z}_0 + z_{\alpha /2}}{1-\widehat{a}(\widehat{z}_0 + z_{\alpha /2})} \right)$ and $\alpha_2 = \Phi \left( \widehat{z}_0 + \dfrac{\widehat{z}_0 + z_{1-\alpha /2}}{1-\widehat{a}(\widehat{z}_0 + z_{1-\alpha /2})} \right)$.
+8. Find the $\alpha_1^{th}$ and $\alpha_2^{th}$ percentiles of the distribution of $\widehat{\theta}^*$.
+
+We demonstrate this algorithm by using it to compute the 95% BCa bootstrap confidence interval for the population coefficient of variation, $\widehat{\sigma}/\widehat{\mu}$, of “medv”.
+
+1. For each bootstrap replicate $b = 1, \, ..., \, B$, generate $n$ random integers $\left\{ i_1, \, i_2, \, ..., \, i_n \right\}$ uniformly on the set $\left\{ 1, \, 2, \, ..., \, n \right\}$ and select the bootstrap sample $x^{(b)} = ( x_{i1}, \, x_{i2}, \, ..., \, x_{in})$.
+
+We will reuse the bootstrap samples taken earlier, stored in the list `my_replicates`.
+
+2. For each replicate $b_i$, compute $\widehat{\theta}^{(b)}$ from the $b^{th}$ sample $x^{(b)}$.
+
+These are also already computed and stored in the vector `theta_hats`.
+
+3. From the $B$ calculated $\widehat{\theta}s$, calculate $\widehat{z}_0 = \Phi^{-1} \left( \dfrac{1}{B} \sum\limits_{b=1}^{B} I(\widehat{\theta}^{(b)} < \widehat{\theta}) \right)$.
+
+This is just a count of how many $\widehat{\theta}^{(b)}s$ are greater that $\widehat{\theta}$ ($\widehat{\theta}$ is stored as `mycv`) divided by the total number of replicates, then passed to the inverse normal CDF.
+```{r}
+z_0hat <- qnorm(sum(theta_hats>mycv)/B)
+z_0hat
+```
+
+4. For each leave-one-out sample $x_{(i)} = (x_1, ..., x_{i-1}, x_{i+1}, ..., x_n)$, compute $\widehat{\theta}_{(i)}$.
+
+First we pre-allocate an empty vector for each $\widehat{\theta}_{(i)}$. There will be $n$ of these. Then we remove the $i^{th}$ value from the sample, one at a time, and calculate the coefficient of variation $\widehat{\theta}_{(i)}$, placing it into the $i^{th}$ element of the pre-allocated vector. Note that `n` is stored from earlier and it is equal to the number of observations in the sample.
+```{r}
+loo_theta_hats <- vector(mode='numeric', length=n)
+for(i in 1:n){
+  loo_theta_hats[i] <- coef_var(Boston$medv[-i])
+}
+```
+
+5. Compute $\overline{\widehat{\theta}_{(.)}}$, the mean of all $n$ computed $\widehat{\theta}_{(i)}s$.
+
+We just take the mean of the computed leave-one-out $\widehat{\theta}_{(i)}s$.
+```{r}
+loo_theta_hats_mean <- mean(loo_theta_hats)
+```
+
+6. From the $n$ computed $\widehat{\theta}_{(i)}s$ and $\overline{\widehat{\theta}_{(.)}}$, compute $\widehat{a} = \dfrac{\sum\limits_{i=1}^{n} (\overline{\theta_{(.)}} - \theta_{(i)})^3}{6 \sum\limits_{i=1}^{n} ((\overline{\theta_{(.)}} - \theta_{(i)})^2)^{3/2}}$.
+
+First we calculate just the numerator of $\widehat{a}$, $\sum\limits_{i=1}^{n} (\overline{\theta_{(.)}} - \theta_{(i)})^3$.
+```{r}
+loo_thete_hat_errs <- loo_theta_hats_mean-loo_theta_hats
+numerator <- sum((loo_thete_hat_errs)^3)
+```
+
+Then the denominator, $6 \sum\limits_{i=1}^{n} ((\overline{\theta_{(.)}} - \theta_{(i)})^2)^{3/2}$.
+```{r}
+denominator <- 6*sum(loo_thete_hat_errs^2)^(3/2)
+```
+
+Then finally calculate $\widehat{a}$.
+```{r}
+ahat <- numerator/denominator
+ahat
+```
+
+7. Using $\widehat{a}$ and $\widehat{z}_0$, compute $\alpha_1 = \Phi \left( \widehat{z}_0 + \dfrac{\widehat{z}_0 + z_{\alpha /2}}{1-\widehat{a}(\widehat{z}_0 + z_{\alpha /2})} \right)$ and $\alpha_2 = \Phi \left( \widehat{z}_0 + \dfrac{\widehat{z}_0 + z_{1-\alpha /2}}{1-\widehat{a}(\widehat{z}_0 + z_{1-\alpha /2})} \right)$.
+
+First we compute $\widehat{z}_0+z_{\alpha/2}$, then use this value to compute $\dfrac{\widehat{z}_0 + z_{\alpha /2}}{1-\widehat{a}(\widehat{z}_0 + z_{\alpha /2})}$, the finally pass this value to the standard normal CDF to find $\alpha_1$.
+```{r}
+tmp <- z_0hat+qnorm(alpha/2)
+tmp2 <- z_0hat+((tmp)/(1-(ahat*tmp)))
+alpha_1 <- pnorm(tmp2)
+alpha_1
+```
+
+And we repeat this to find $\alpha_2$, using $z_{1-\alpha_2}$ instead of $z_{\alpha/2}$.
+```{r}
+tmp <- z_0hat+qnorm((1-(alpha/2)))
+tmp2 <- z_0hat+((tmp)/(1-(ahat*tmp)))
+alpha_2 <- pnorm(tmp2)
+alpha_2
+```
+
+8. Find the $\alpha_1^{th}$ and $\alpha_2^{th}$ percentiles of the distribution of $\widehat{\theta}^*$.
+
+We use the `quantile()` function to find the $\alpha_1^{th}$ and $\alpha_2^{th}$ percentile of the $B$ computed $\widehat{\theta}^*s$ (stored in the vector `theta_hats`).
+```{r}
+quantile(theta_hats, c(alpha_1, alpha_2))
+```
+
+Although these are not the $2.5^{th}$ and $97.5^{th}$ percentiles of the $\widehat{\theta}^*s$, this is the 95% BCa confidence interval for the true population coefficient of variation of "medv". This confidence interval is adjusted for the bias and skewness of the distribution of the $\widehat{\theta}^*s$.
 
 -----
 
@@ -115,9 +303,9 @@ One may consider a special case of k-fold cross-validation where $k=n$. Then a m
 
 ### 2. Propose an algorithm for the k-fold cross validation.
 
-1. Choose $k$, the number of segments you wish to divide the data into (and the number of models you will fit). The size of each data segment, call them $S_1, \, S_2, \, ..., \, S_k$, is approximately $\dfrac{n}{k}$ (rounding if necessary).
+1. Choose $k$, the number of segments you wish to divide the data into (and the number of models you will fit). The size of each data segment, call them $S_1, \, S_2, \, ..., \, S_k$, is $Size(S_{*}) = \dfrac{n}{k}$ (rounding down if necessary). There will be $n \mod k$ "leftover" observations.
 
-2. Randomly sample $\dfrac{n}{k}$ observations from the data set to occupy set $S_1$, without replacement. Repeat for sets $S_2, \, ..., \, S_{k-1}$, never replacing any observations. The remaining $\dfrac{n}{k}$ observations will occupy set $S_k$. 
+2. Take the sequence of integers $1, ..., k$ and replicate it $Size(S_{*})$ times. Append to this sequence the integers $1, ..., n \mod k$. This sequence will now be $n$ integers in length. These integers are the segment assignments for for each of the $n$ observations. To randomize the segment assignments, randomly permute the sequence of integers.
 
 3. Fit a model using the data in sets $S_2, \, ..., \, S_k$ (leaving out set $S_1$).
 
@@ -126,6 +314,124 @@ One may consider a special case of k-fold cross-validation where $k=n$. Then a m
 5. Repeat steps 3 and 4, leaving out $S_2$, then $S_3$, and so on until $MSE_1, \, MSE_2, \, ..., \, MSE_k$ have been attained.
 
 6. Find the mean of ${ MSE_1, \, MSE_2, \, ..., \, MSE_k }$
+
+### 3. In example 7.18 on page 210 of the textbook of Rizzo, LOOCV was used to select the best fitting model. Repeat the same analysis using a 10-fold cross validation. Compare the results using the two methods.
+
+Problem 7.18 uses the "ironslag" data set contained in the `DAAG` package. We load the namespace of this package and call the data set into the global environment.
+```{r}
+library(DAAG) # load library for ironslag data set
+data(ironslag) # data now exists in the global work space
+```
+
+We demonstrate the algorithm for k-fold cross-validation laid out earlier to replicate example 7.18.
+
+1. Choose $k$, the number of segments you wish to divide the data into (and the number of models you will fit). The size of each data segment, call them $S_1, \, S_2, \, ..., \, S_k$, is $Size(S_{*}) = \dfrac{n}{k}$ (rounding down if necessary). There will be $n \mod k$ "leftover" observations.
+
+We wish to divide the data into 10 segments. The number of observations in the data is not evenly divisible by 10, so there will be some "leftover" observations. Note that the modulus operator in R is `%%`.
+```{r}
+k <- 10 # for 10-fold cross-validation
+n <- nrow(ironslag) # sample size
+seg_size <- floor(n/k) # approx size of each segment
+leftovers <- n%%k
+```
+
+2. Take the sequence of integers $1, ..., k$ each replicated $Size(S_{*})$ times. If $n \mod k > 0$, append to this sequence the integers $1, ..., n \mod k$. This sequence will now be $n$ integers in length. These integers are the segment assignments for for each of the $n$ observations. To randomize the segment assignments, randomly permute the sequence of integers.
+
+We generate the suggested sequence, and since we have some "leftover" points, we append those to the sequence. Once the sequence of integers is created, we permute it using the `sample()` function, being sure to set a random seed beforehand.
+```{r}
+seg_assignments <- rep(1:k, each=seg_size) # create segment assignments
+seg_assignments <- c(seg_assignments, 1:leftovers) # add "leftover" observations
+set.seed(8675309) # set random seed
+seg_assignments <- sample(seg_assignments) # randomly permute segment assignments
+```
+
+3. Fit a model using the data in sets $S_2, \, ..., \, S_k$ (leaving out set $S_1$).
+
+We fit the four models fit in example 7.18 for all observations not in Segment 1.
+```{r}
+train <- ironslag[seg_assignments!=1, ]
+lin_mod <- lm(magnetic~chemical, data=train) # Fit linear model using training data
+quad_mod <- lm(magnetic~chemical+I(chemical^2), data=train ) # Fit quadratic model using training data
+exp_mod <- lm(log(magnetic)~chemical, data=train) # Fit exponential model using training data
+log_mod <- lm(log(magnetic)~log(chemical), data=train) # Fit log-log model using training data
+```
+
+4. Use the model fit to predict the outcome of set $S_1$ and calculate the MSE of these predictions, $MSE_1$.
+
+We use the four models fit to predict the validation set, being sure to exponentiate the predictions made by the exponential and log-log models because those predictions will be in log-units.
+```{r}
+validation <- ironslag[seg_assignments==1, ]
+lin_pred <- predict(lin_mod, newdata=validation) # use linear model to predict validation set
+quad_pred <- predict(quad_mod, newdata=validation) # use quadratic model to predict validation set
+exp_pred <- exp(predict(exp_mod, newdata=validation)) # remember to exponentiate predictions
+log_pred <- exp(predict(log_mod, newdata=validation)) # remember to exponentiate predictions
+```
+
+Then we find the errors of each prediction set and calculate $MSE_1$ for each model.
+```{r}
+lin_errors <- (validation$chemical-lin_pred)
+quad_errors <- (validation$chemical-quad_pred)
+exp_errors <- (validation$chemical-exp_pred)
+log_errors <- (validation$chemical-log_pred)
+
+lin_MSE <- mean(lin_errors^2)
+quad_MSE <- mean(quad_errors^2)
+exp_MSE <- mean(exp_errors^2)
+log_MSE <- mean(log_errors^2)
+
+c(lin_MSE, quad_MSE, exp_MSE, log_MSE)
+```
+
+5. Repeat steps 3 and 4, leaving out $S_2$, then $S_3$, and so on until $MSE_1, \, MSE_2, \, ..., \, MSE_k$ have been attained.
+
+We first pre-allocate a data frame to store the four MSEs computed for each of the $k$ training sets.
+```{r}
+mse_df <- data.frame(lin_MSE=NA, quad_MSE=NA, exp_MSE=NA, log_MSE=NA)
+```
+
+Then we repeat steps 3 and 4 for each value of $k$, storing the computed MSEs in `mse_df` along the way.
+```{r}
+for(i in 1:k){
+  train <- ironslag[seg_assignments!=i, ] # define training set i
+  
+  # fit models for training set i
+  lin_mod <- lm(magnetic~chemical, data=train) # linear model
+  quad_mod <- lm(magnetic~chemical+I(chemical^2), data=train) # quadratic model 
+  exp_mod <- lm(log(magnetic)~chemical, data=train) # exponential model
+  log_mod <- lm(log(magnetic)~log(chemical), data=train) # log-log model
+  
+  validation <- ironslag[seg_assignments==i, ] # define validation set i
+  
+  # make predictions for validation set i
+  lin_pred <- predict(lin_mod, newdata=validation) # linear model predictions
+  quad_pred <- predict(quad_mod, newdata=validation) # quadratic model predictions
+  exp_pred <- exp(predict(exp_mod, newdata=validation)) # exponential model predictions
+  log_pred <- exp(predict(log_mod, newdata=validation)) # log-log model predictions
+  
+  # calculate prediction errors for validation set i
+  lin_errors <- (validation$chemical-lin_pred)
+  quad_errors <- (validation$chemical-quad_pred)
+  exp_errors <- (validation$chemical-exp_pred)
+  log_errors <- (validation$chemical-log_pred)
+  
+  # calculate MSE for validation set i
+  lin_MSE <- mean(lin_errors^2)
+  quad_MSE <- mean(quad_errors^2)
+  exp_MSE <- mean(exp_errors^2)
+  log_MSE <- mean(log_errors^2)
+  
+  # store calculated MSEs in mse_df
+  mse_df[i, ] <- c(lin_MSE, quad_MSE, exp_MSE, log_MSE)
+  }
+```
+
+6. Find the mean of ${ MSE_1, \, MSE_2, \, ..., \, MSE_k }$
+
+We calculate the means of the four MSEs computed (which are stored in `mse_df`).
+```{r}
+colMeans(mse_df)
+```
+
 
 -----
 
@@ -139,7 +445,7 @@ library(bootstrap)
 data(scor) # call the data set into the global environment
 ```
 
-    7.8 Refer to Excercise 7.7. Obtain the jacknife estimates of bias and standard error of $\hat{\theta}$.
+    7.8 Refer to Excercise 7.7. Obtain the jacknife estimates of bias and standard error of $\widehat{\theta}$.
 
 Excercise 7.7 states:
 
@@ -147,21 +453,21 @@ The five-dimensional scores data have a 5 x 5 covariabnce matrix $\Sigma$, with 
 
 $$\theta = \dfrac{\lambda_1}{\sum_{j=1}^{5} \lambda_j}$$
 
-measures the proportion of the variance explained by the first principal component. Let $\hat{\lambda_1} > ... > \hat{\lambda_5}$ be the eigenvalues of $\hat{\Sigma}$, where $\hat{\Sigma}$ is the MLE of $\Sigma$. Compute the sample estimate 
+measures the proportion of the variance explained by the first principal component. Let $\widehat{\lambda_1} > ... > \widehat{\lambda_5}$ be the eigenvalues of $\widehat{\Sigma}$, where $\widehat{\Sigma}$ is the MLE of $\Sigma$. Compute the sample estimate 
 
-$$\hat{\theta} = \dfrac{\hat{\lambda_1}}{\sum_{j=1}^{5}\hat{\lambda_j}}$$
+$$\widehat{\theta} = \dfrac{\widehat{\lambda_1}}{\sum_{j=1}^{5}\widehat{\lambda_j}}$$
 
-So we wish to obtain the jacknife estimates of bias and standard error of $\hat{\theta}$ as given above, in reference to the `scor` data set.
+So we wish to obtain the jacknife estimates of bias and standard error of $\widehat{\theta}$ as given above, in reference to the `scor` data set.
 
 Defining the $i^{th}$ jacknife sample $x_{(i)}$ as the subset of the original data that leaves out the $i^{th}$ observation $x_i$, the jacknife estimate of bias is 
 
-$$\hat{bias}_{jack} = (n-1)(\bar{\hat{\theta}}_{(.)} - \hat{\theta}),$$
+$$\widehat{bias}_{jack} = (n-1)(\overline{\widehat{\theta}}_{(.)} - \widehat{\theta}),$$
 
-where $\bar{\hat{\theta}}_{(.)}=\dfrac{1}{n} \sum_{i=1}^{n}\hat{\theta}_{(i)}$ is the mean of the estimates of the leave-one-out samples, and $\hat{\theta} = \hat{\theta}(x)$ is the estimate computed from the original observed sample.
+where $\overline{\widehat{\theta}}_{(.)}=\dfrac{1}{n} \sum_{i=1}^{n}\widehat{\theta}_{(i)}$ is the mean of the estimates of the leave-one-out samples, and $\widehat{\theta} = \widehat{\theta}(x)$ is the estimate computed from the original observed sample.
 
-Since we will be computing $n+1$ $\hat{\theta}$'s, it will simplify things to define a function that computes for any sample 
+Since we will be computing $n+1$ $\widehat{\theta}$'s, it will simplify things to define a function that computes for any sample 
 
-$$\hat{\theta} = \dfrac{\hat{\lambda_1}}{\sum_{j=1}^{5}\hat{\lambda}_j}$$
+$$\widehat{\theta} = \dfrac{\widehat{\lambda_1}}{\sum_{j=1}^{5}\widehat{\lambda}_j}$$
 
 ```{r}
 myfunc <- function(mysamp){
@@ -174,13 +480,13 @@ myfunc <- function(mysamp){
 }
 ```
 
-First, we compute $\hat{\theta}$ from all observations $x_1, \, x_2, \, ..., \, x_n$ using the function `myfunc()`.
+First, we compute $\widehat{\theta}$ from all observations $x_1, \, x_2, \, ..., \, x_n$ using the function `myfunc()`.
 ```{r}
 my_theta_hat <- myfunc(scor) # find theta hat using all x's
 my_theta_hat
 ```
 
-Next we calculate $\hat{\theta}_{(i)}$ for $x_{(1)}, \, x_{(2)}, \, ..., \, x_{(n)}$ again using the function `myfunc()`.
+Next we calculate $\widehat{\theta}_{(i)}$ for $x_{(1)}, \, x_{(2)}, \, ..., \, x_{(n)}$ again using the function `myfunc()`.
 ```{r}
 theta_hat_vec <- vector(mode='numeric', length=nrow(scor)) # pre-allocate empty vector for theta hats
 for(i in 1:nrow(scor)){
@@ -190,24 +496,24 @@ for(i in 1:nrow(scor)){
 }
 ```
 
-From these $\hat{\theta}_{(i)}$'s we can now compute $\bar{\hat{\theta}}_{(.)}$.
+From these $\widehat{\theta}_{(i)}$'s we can now compute $\overline{\widehat{\theta}}_{(.)}$.
 ```{r}
 theta_hat_bar <- mean(theta_hat_vec) # mean of all theta hat i's
 theta_hat_bar
 ```
 
-And finally we can compute the jacknife estimate of the bias of $\hat{theta}$.
+And finally we can compute the jacknife estimate of the bias of $\widehat{theta}$.
 ```{r}
 n <- nrow(scor) # sample size
 jacknife_bias <- (n-1)*(theta_hat_bar-my_theta_hat) # jacknife est of bias
 jacknife_bias
 ```
 
-To compute the jacknife estimate of standard error of $\hat{\theta}$, 
+To compute the jacknife estimate of standard error of $\widehat{\theta}$, 
 
-$$\hat{se}_{jack} = \sqrt{ \dfrac{n-1}{n} \sum_{}^{}(\hat{\theta}_{(i)}-\bar{\hat{\theta}}_{(.)})^2}$$
+$$\widehat{se}_{jack} = \sqrt{ \dfrac{n-1}{n} \sum_{}^{}(\widehat{\theta}_{(i)}-\overline{\widehat{\theta}}_{(.)})^2}$$
 
-we can recycle the $\hat{\theta}_{(i)}$'s computed earlier. First we calculate the error of each $\hat{\theta}_{(i)}$ (the difference between it and $\bar{\hat{\theta}}_{(.)}$).
+we can recycle the $\widehat{\theta}_{(i)}$'s computed earlier. First we calculate the error of each $\widehat{\theta}_{(i)}$ (the difference between it and $\overline{\widehat{\theta}}_{(.)}$).
 ```{r}
 theta_hat_errors <- theta_hat_vec-theta_hat_bar # error of each theta hat i
 ```
@@ -217,8 +523,15 @@ Then find the squared errors:
 theta_hat_sq_errors <- theta_hat_errors^2 # squared errors from raw errors
 ```
 
-And finally compute $\hat{se}_{jack}$.
+And finally compute $\widehat{se}_{jack}$.
 ```{r}
 jacknife_se <- sqrt( ((n-1)/n) * sum(theta_hat_sq_errors) ) # compute jacknife se
 jacknife_se
 ```
+
+## Appendix with R code
+
+```{r all-code, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE, tidy.opts=list(keep.blank.line=T)}
+```
+
+-----
